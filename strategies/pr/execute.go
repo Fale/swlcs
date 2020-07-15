@@ -41,7 +41,7 @@ func (pr PR) getTree(ref *github.Reference) (tree *github.Tree, err error) {
 		{
 			Path:    &pr.comment.FileName,
 			Type:    github.String("blob"),
-			Content: github.String(pr.comment.Content),
+			Content: &pr.comment.Content,
 			Mode:    github.String("100644"),
 		},
 	}
