@@ -32,7 +32,7 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 		return fmt.Sprintf("impossible to decode JSON: %s", err), err
 	}
 	tz, err := time.LoadLocation("UTC")
-	t := time.Now().In(tz).Format("2006-01-02_15-04-05")
+	now := time.Now().In(tz)
 	if err != nil {
 		return fmt.Sprintf("impossible to get the correct timezone informations: %s", err), err
 	}
@@ -40,7 +40,6 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: os.Getenv("GITHUB_ACCESS_TOKEN")})
 	tc := oauth2.NewClient(ctx, ts)
 
-	now := time.Now().In(tz)
 	st, err := strategies.Init(
 		os.Getenv("GIT_STRATEGY"),
 		ctx,
@@ -65,5 +64,5 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 	if err := st.Execute(); err != nil {
 		return fmt.Sprintf("an error occurred while executing git commands: %s", err), err
 	}
-	return fmt.Sprintf("comment correctly posted at %s", t), nil
+	return fmt.Sprintf("comment correctly posted"), nil
 }
