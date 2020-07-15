@@ -22,7 +22,7 @@ func main() {
 type CommentRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
-	Content  string `json:"content"`
+	Body     string `json:"body"`
 	Resource string `json:"resource"`
 }
 
@@ -32,7 +32,6 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 		return fmt.Sprintf("impossible to decode JSON: %s", err), err
 	}
 	tz, err := time.LoadLocation("UTC")
-	now := time.Now().In(tz)
 	if err != nil {
 		return fmt.Sprintf("impossible to get the correct timezone informations: %s", err), err
 	}
@@ -53,9 +52,8 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 			Resource:    payload.Resource,
 			AuthorName:  payload.Name,
 			AuthorEmail: payload.Email,
-			Content:     payload.Content,
-			FileName:    fmt.Sprintf("data/comments/post/%s/%s.md", payload.Resource, now.Format("2006-01-02_15-04-05")),
-			Time:        now,
+			Body:        payload.Body,
+			Time:        time.Now().In(tz),
 		},
 	)
 	if err != nil {

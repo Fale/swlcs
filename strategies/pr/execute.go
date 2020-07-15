@@ -37,11 +37,15 @@ func (pr PR) createBranch() (ref *github.Reference, err error) {
 }
 
 func (pr PR) getTree(ref *github.Reference) (tree *github.Tree, err error) {
+	content, err := pr.comment.FileContent()
+	if err != nil {
+		return nil, err
+	}
 	entries := []github.TreeEntry{
 		{
-			Path:    &pr.comment.FileName,
+			Path:    github.String(pr.comment.FileName()),
 			Type:    github.String("blob"),
-			Content: &pr.comment.Content,
+			Content: github.String(string(content)),
 			Mode:    github.String("100644"),
 		},
 	}
