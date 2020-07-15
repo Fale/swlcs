@@ -39,7 +39,7 @@ func (pr PR) createBranch() (ref *github.Reference, err error) {
 func (pr PR) getTree(ref *github.Reference) (tree *github.Tree, err error) {
 	entries := []github.TreeEntry{
 		{
-			Path:    github.String(fmt.Sprintf("data/comments/post/%s/%s.md", pr.comment.Resource, pr.comment.Time.Format("2006-01-02_15-04-05"))),
+			Path:    &pr.comment.FileName,
 			Type:    github.String("blob"),
 			Content: github.String(pr.comment.Content),
 			Mode:    github.String("100644"),

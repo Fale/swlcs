@@ -40,6 +40,7 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: os.Getenv("GITHUB_ACCESS_TOKEN")})
 	tc := oauth2.NewClient(ctx, ts)
 
+	now := time.Now().In(tz)
 	st, err := strategies.Init(
 		os.Getenv("GIT_STRATEGY"),
 		ctx,
@@ -54,7 +55,8 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 			AuthorName:  payload.Name,
 			AuthorEmail: payload.Email,
 			Content:     payload.Content,
-			Time:        time.Now().In(tz),
+			FileName:    fmt.Sprintf("data/comments/post/%s/%s.md", payload.Resource, now.Format("2006-01-02_15-04-05")),
+			Time:        now,
 		},
 	)
 	if err != nil {

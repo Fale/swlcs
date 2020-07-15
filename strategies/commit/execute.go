@@ -13,8 +13,7 @@ func (dc DirectCommit) Execute() error {
 		Branch:    &dc.repository.Branch,
 		Committer: &github.CommitAuthor{Name: &dc.comment.AuthorName, Email: &dc.comment.AuthorEmail},
 	}
-	fileName := fmt.Sprintf("data/comments/post/%s/%s.md", dc.comment.Resource, dc.comment.Time.Format("2006-01-02_15-04-05"))
-	_, _, err := dc.repository.GitHubClient.Repositories.CreateFile(dc.ctx, dc.repository.Owner, dc.repository.Name, fileName, opts)
+	_, _, err := dc.repository.GitHubClient.Repositories.CreateFile(dc.ctx, dc.repository.Owner, dc.repository.Name, dc.comment.FileName, opts)
 	if err != nil {
 		return fmt.Errorf("an error occurred while posting the comment: %s", err)
 	}
