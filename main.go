@@ -62,5 +62,5 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (stri
 	if err := st.Execute(); err != nil {
 		return fmt.Sprintf("an error occurred while executing git commands: %s", err), err
 	}
-	return fmt.Sprintf("comment correctly posted"), nil
+	return "comment correctly posted", nil
 }
