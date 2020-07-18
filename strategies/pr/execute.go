@@ -2,6 +2,7 @@ package pr
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/google/go-github/github"
 )
@@ -94,6 +95,6 @@ func (pr PR) createPR() (err error) {
 		return err
 	}
 
-	fmt.Printf("PR created: %s\n", p.GetHTMLURL())
+	log.Printf("PR created: %s\n", p.GetHTMLURL())
 	return nil
 }
