@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -32,16 +33,30 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (even
 	case "POST":
 		res, err := ProcessRequest(ctx, req)
 		if err != nil {
+			msg := map[string]interface{}{
+				"error": err,
+			}
+			body, err := json.Marshal(msg)
+			if err != nil {
+				log.Printf("an error occurred during the preparing of a JSON response: %v", err)
+			}
 			return events.APIGatewayProxyResponse{
-				StatusCode: 200,
+				StatusCode: 400,
 				Headers: map[string]string{
 					"Access-Control-Allow-Origin":  os.Getenv("ACAO"),
 					"Content-Type":                 "application/json",
 					"Access-Control-Allow-Methods": "POST, OPTIONS",
 					"Access-Control-Allow-Headers": "content-type",
 				},
-				Body: "{'error': '" + err.Error() + "'}",
-			}, nil
+				Body: string(body),
+			}, err
+		}
+		msg := map[string]interface{}{
+			"result": res,
+		}
+		body, err := json.Marshal(msg)
+		if err != nil {
+			log.Printf("an error occurred during the preparing of a JSON response: %v", err)
 		}
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
@@ -51,7 +66,7 @@ func HandleRequest(ctx context.Context, req events.APIGatewayProxyRequest) (even
 				"Access-Control-Allow-Methods": "POST, OPTIONS",
 				"Access-Control-Allow-Headers": "content-type",
 			},
-			Body: "{'result': '" + res + "'}",
+			Body: string(body),
 		}, nil
 	case "OPTIONS":
 		return events.APIGatewayProxyResponse{
