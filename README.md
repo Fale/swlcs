@@ -5,4 +5,4 @@
 
 ## Build for AWS Lambda
 
-    GOOS=linux go build main.go && rm function.zip && zip function.zip main
+    GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -tags lambda.norpc -o bootstrap main.go && rm -f function.zip && zip function.zip bootstrap
